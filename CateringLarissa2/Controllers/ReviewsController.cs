@@ -125,7 +125,7 @@ namespace CateringLarissa2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,title,rating")] Review review)
+        public async Task<IActionResult> Edit(int id, [Bind("id,title,description,user,rating")] Review review)
         {
             if (id != review.id)
             {

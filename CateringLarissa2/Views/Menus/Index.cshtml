@@ -35,8 +35,10 @@
 <div class="card-column">
 @foreach (var item in Model) {
     
-  <div class="card mx-6 bg-light" style="width: 20rem;">
-  <img class="card-img-top" src="~/Images/@item.menuimage" alt="Card image cap" width="1000px" height="180px">
+<div class="container">
+<div class="row my-4">
+  <div class="card col-md-4 card h-100" style="width: 20rem; ">
+  <img class="card-img-top" src="~/Images/@item.menuimage" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">@Html.DisplayFor(modelItem => item.title)</h5>
     <h6 class="card-title">Rp.@Html.DisplayFor(modelItem => item.price)</h6>
@@ -44,8 +46,8 @@
     
                 @if (usr == "Admin")
                 {<a asp-action="Edit" asp-route-id="@item.id">
-        <button class="btn btn-info mx-1 active" type="submit" ><i class="fas fa-edit"></i></button
-    </a> 
+        <button class="btn btn-info mx-1 active" type="submit" ><i class="fas fa-edit"></i></button>
+                </a> 
                     <a asp-action="Details" asp-route-id="@item.id">
                         <button class="btn btn-primary mx-1" type="submit" ><i class="fas fa-info-circle"></i></button>
                     </a> 
@@ -54,6 +56,9 @@
                     </a>
             }
             </div>
+    
   </div>
+</div>
+</div>
  }
 </div>

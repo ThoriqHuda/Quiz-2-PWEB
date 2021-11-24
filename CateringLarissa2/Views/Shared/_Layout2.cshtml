@@ -72,10 +72,10 @@
         </li>
         
         @{
-            var usr = await UserManager.GetUserAsync(User);
-            var name = usr.UserName;
+            var usr =  @Context.User.Identity.Name;
+            
         }
-        @if(name== "Admin"){
+        @if(usr== "Admin"){
                 <h6 class="sidebar-heading d-flex justify-content-between align-item-center px-3 mt-4 mb-1 text-muted">
           <span>Administrator</span>
         </h6>
