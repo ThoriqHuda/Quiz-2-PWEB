@@ -7,22 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CateringLarissa2.Data;
 using CateringLarissa2.Models;
+using CateringLarissa2.ViewModels;
 
 namespace CateringLarissa2.Controllers
 {
     public class MenusController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment WebHostEnvironment;
 
-        public MenusController(ApplicationDbContext context)
+        public MenusController(ApplicationDbContext context,
+            IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            WebHostEnvironment = webHostEnvironment;
         }
 
         // GET: Menus
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Menu.ToListAsync());
+            var item = _context.Menu.ToList();
+            return View(item);
         }
 
         // GET: Menus/Details/5
@@ -44,9 +49,41 @@ namespace CateringLarissa2.Controllers
         }
 
         // GET: Menus/Create
-        public IActionResult Create()
+        public IActionResult Create2()
         {
-            return View();
+            return View("Create");
+        }
+
+        [HttpPost]
+        public IActionResult Create3(MenuViewModel vm)
+        {
+            string stringFileName = UploadFile(vm);
+            var menu = new Menu {
+                title = vm.title,
+                price = vm.price,
+                description = vm.description,
+                menuimage = stringFileName
+            };
+            _context.Menu.Add(menu);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        private string UploadFile(MenuViewModel vm)
+        {
+            string fileName = null;
+            if (vm.menuimage != null)
+            {
+                string uploadDir = Path.Combine(WebHostEnvironment.WebRootPath,
+                    "Images");
+                fileName = Guid.NewGuid().ToString() + "-" + vm.menuimage.FileName;
+                string filepath = Path.Combine(uploadDir, fileName);
+                using (var fileStream = new FileStream(filepath, FileMode.Create))
+                {
+                    vm.menuimage.CopyTo(fileStream);
+                }
+            }
+            return fileName;
         }
 
         // POST: Menus/Create
@@ -65,6 +102,13 @@ namespace CateringLarissa2.Controllers
             return View(menu);
         }
 
+        public async Task<IActionResult> Search(String SearchString)
+        {
+            if (SearchString != null) {
+            return View("Index", await _context.Menu.Where(j => j.title.Contains(SearchString)).ToListAsync());
+            }
+            return RedirectToAction(nameof(Index));
+        }
         // GET: Menus/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -86,7 +130,7 @@ namespace CateringLarissa2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,title,description,price")] Menu menu)
+        public async Task<IActionResult> Edit(int id, [Bind("id,title,description,price,menuimage")] Menu menu)
         {
             if (id != menu.id)
             {

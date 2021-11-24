@@ -27,7 +27,39 @@ namespace CateringLarissa2.Controllers
 
         public async Task<IActionResult> Search(String SearchString)
         {
-            return View("Index", await _context.Review.Where(j=>j.title.Contains(SearchString)).ToListAsync());
+            if (SearchString != null)
+            {
+                return View("Index", await _context.Review.Where(j => j.title.Contains(SearchString)).ToListAsync());
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Filter(String SearchString2)
+        {
+            if (SearchString2 != null)
+            {
+                return View("Index", await _context.Review.Where(j => j.user.Contains(SearchString2)).ToListAsync());
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Stars()
+        {
+            return View("Index", await _context.Review.OrderBy(j => j.rating).ToListAsync());
+        }
+
+        public async Task<IActionResult> Stars2()
+        {
+            return View("Index", await _context.Review.OrderByDescending(j => j.rating).ToListAsync());
+        }
+
+        public async Task<IActionResult> dateold()
+        {
+            return View("Index", await _context.Review.OrderBy(j => j.CreatedDate).ToListAsync());
+        }
+        public async Task<IActionResult> datenew()
+        {
+            return View("Index", await _context.Review.OrderByDescending(j => j.CreatedDate).ToListAsync());
         }
 
         // GET: Reviews/Details/5

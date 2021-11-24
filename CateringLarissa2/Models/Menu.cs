@@ -7,6 +7,8 @@
         public string description { get; set; }
         public int price { get; set; }
 
+        public string menuimage { get; set; }
+
         public Menu()
         {
 
